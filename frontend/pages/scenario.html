@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        PARVAT — Scenario Intelligence
+    </title>
+
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <link
+        rel="stylesheet"
+        href="assets/style.css"
+    >
+
+
+    <style>
+
+        /*
+         * =====================================================
+         * SCENARIO INTELLIGENCE
+         * =====================================================
+         */
+
+        body[data-page="scenario"]{
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(77,120,93,.16),
+                    transparent 42%
+                ),
+                #07100c;
+
+        }
+
+
+        .scenario-page{
+
+            width:
+                min(1400px, 94vw);
+
+            margin:
+                0 auto;
+
+            padding:
+                35px 0 70px;
+
+        }
+
+
+        .scenario-top{
+
+            display:flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                flex-start;
+
+            gap:25px;
+
+            margin-bottom:30px;
+
+        }
+
+
+        .scenario-kicker{
+
+            font:
+                10px "DM Mono",
+                monospace;
+
+            letter-spacing:
+                .18em;
+
+            color:
+                #83b796;
+
+            margin-bottom:
+                10px;
+
+        }
+
+
+        .scenario-title{
+
+            margin:0;
+
+            max-width:
+                800px;
+
+            font:
+                800 clamp(38px,5vw,76px)
+                Manrope,
+                sans-serif;
+
+            line-height:
+                .96;
+
+            letter-spacing:
+                -.055em;
+
+            color:
+                #effff3;
+
+        }
+
+
+        .scenario-sub{
+
+            max-width:
+                720px;
+
+            margin-top:
+                18px;
+
+            color:
+                #91a89a;
+
+            font-size:
+                14px;
+
+            line-height:
+                1.7;
+
+        }
+
+
+        .model-status{
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            gap:8px;
+
+            padding:
+                9px 13px;
+
+            border:
+                1px solid
+                rgba(156,229,185,.18);
+
+            border-radius:
+                999px;
+
+            background:
+                rgba(156,229,185,.05);
+
+            color:
+                #9ce5b9;
+
+            font:
+                9px "DM Mono",
+                monospace;
+
+            letter-spacing:
+                .11em;
+
+            white-space:
+                nowrap;
+
+        }
+
+
+        .model-status.online{
+
+            background:
+                rgba(80,220,140,.08);
+
+            border-color:
+                rgba(120,255,180,.3);
+
+        }
+
+
+        /*
+         * =====================================================
+         * METRICS
+         * =====================================================
+         */
+
+        .scenario-metrics{
+
+            display:grid;
+
+            grid-template-columns:
+                repeat(4,1fr);
+
+            gap:12px;
+
+            margin-bottom:18px;
+
+        }
+
+
+        .metric-card{
+
+            padding:
+                20px;
+
+            border:
+                1px solid
+                rgba(156,229,185,.12);
+
+            border-radius:
+                18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(156,229,185,.065),
+                    rgba(255,255,255,.018)
+                );
+
+            box-shadow:
+                0 18px 50px
+                rgba(0,0,0,.2);
+
+        }
+
+
+        .metric-card span{
+
+            display:block;
+
+            font:
+                9px "DM Mono",
+                monospace;
+
+            letter-spacing:
+                .13em;
+
+            color:
+                #668071;
+
+        }
+
+
+        .metric-card strong{
+
+            display:block;
+
+            margin-top:
+                9px;
+
+            font:
+                800 30px Manrope,
+                sans-serif;
+
+            color:
+                #eafff0;
+
+        }
+
+
+        .metric-card strong small{
+
+            font-size:
+                11px;
+
+            color:
+                #688171;
+
+        }
+
+
+        .metric-card > small{
+
+            display:block;
+
+            margin-top:
+                7px;
+
+            color:
+                #70877a;
+
+            font-size:
+                10px;
+
+        }
+
+
+        .meter{
+
+            height:
+                5px;
+
+            margin-top:
+                13px;
+
+            overflow:hidden;
+
+            border-radius:
+                999px;
+
+            background:
+                rgba(255,255,255,.06);
+
+        }
+
+
+        .meter div{
+
+            width:
+                0%;
+
+            height:
+                100%;
+
+            border-radius:
+                inherit;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #73d99b,
+                    #e5b56b,
+                    #ef6d68
+                );
+
+            transition:
+                width 1.2s
+                cubic-bezier(.22,1,.36,1);
+
+        }
+
+
+        /*
+         * =====================================================
+         * MAIN SCENARIO GRID
+         * =====================================================
+         */
+
+        .scenario-layout{
+
+            display:grid;
+
+            grid-template-columns:
+                minmax(0,1.55fr)
+                minmax(330px,.75fr);
+
+            gap:18px;
+
+        }
+
+
+        .cascade-map{
+
+            position:relative;
+
+            min-height:
+                600px;
+
+            overflow:hidden;
+
+            border:
+                1px solid
+                rgba(156,229,185,.12);
+
+            border-radius:
+                24px;
+
+            background:
+
+                radial-gradient(
+                    circle at 50% 45%,
+                    rgba(73,122,89,.14),
+                    transparent 32%
+                ),
+
+                linear-gradient(
+                    180deg,
+                    #09160f,
+                    #06100b
+                );
+
+            box-shadow:
+                inset 0 0 100px
+                rgba(0,0,0,.3),
+                0 25px 80px
+                rgba(0,0,0,.25);
+
+        }
+
+
+        .cascade-map::before{
+
+            content:"";
+
+            position:absolute;
+
+            inset:0;
+
+            background-image:
+                linear-gradient(
+                    rgba(156,229,185,.035) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(156,229,185,.035) 1px,
+                    transparent 1px
+                );
+
+            background-size:
+                50px 50px;
+
+            pointer-events:none;
+
+        }
+
+
+        .cascade-map::after{
+
+            content:"";
+
+            position:absolute;
+
+            inset:0;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    transparent,
+                    rgba(145,240,180,.025),
+                    transparent
+                );
+
+            animation:
+                scan 5s linear infinite;
+
+            pointer-events:none;
+
+        }
+
+
+        @keyframes scan{
+
+            from{
+                transform:translateY(-100%);
+            }
+
+            to{
+                transform:translateY(100%);
+            }
+
+        }
+
+
+        .map-label{
+
+            position:absolute;
+
+            top:22px;
+
+            left:24px;
+
+            z-index:10;
+
+            font:
+                9px "DM Mono",
+                monospace;
+
+            letter-spacing:
+                .16em;
+
+            color:
+                #708d7d;
+
+        }
+
+
+        .map-label b{
+
+            display:block;
+
+            margin-top:
+                6px;
+
+            font-size:
+                12px;
+
+            color:
+                #dff9e7;
+
+        }
+
+
+        /*
+         * =====================================================
+         * NODES
+         * =====================================================
+         */
+
+        .node{
+
+            position:absolute;
+
+            z-index:5;
+
+            width:
+                120px;
+
+            padding:
+                14px;
+
+            border:
+                1px solid
+                rgba(156,229,185,.16);
+
+            border-radius:
+                16px;
+
+            background:
+                rgba(7,19,13,.88);
+
+            backdrop-filter:
+                blur(14px);
+
+            box-shadow:
+                0 15px 35px
+                rgba(0,0,0,.28);
+
+            transition:
+                .35s ease;
+
+            opacity:
+                .52;
+
+        }
+
+
+        .node span{
+
+            display:block;
+
+            font:
+                8px "DM Mono",
+                monospace;
+
+            color:
+                #638071;
+
+            letter-spacing:
+                .12em;
+
+        }
+
+
+        .node b{
+
+            display:block;
+
+            margin-top:
+                6px;
+
+            font-size:
+                12px;
+
+            color:
+                #cfe8d6;
+
+        }
+
+
+        .node.danger{
+
+            opacity:
+                1;
+
+            border-color:
+                rgba(239,109,104,.7);
+
+            box-shadow:
+                0 0 35px
+                rgba(239,109,104,.18);
+
+            animation:
+                nodeDanger 1.2s ease
+                both;
+
+        }
+
+
+        .node.affected{
+
+            opacity:
+                1;
+
+            border-color:
+                rgba(229,181,107,.42);
+
+            box-shadow:
+                0 0 25px
+                rgba(229,181,107,.09);
+
+            animation:
+                nodeAffected .8s ease
+                both;
+
+        }
+
+
+        @keyframes nodeDanger{
+
+            0%{
+                transform:scale(.8);
+                opacity:0;
+            }
+
+            70%{
+                transform:scale(1.06);
+            }
+
+            100%{
+                transform:scale(1);
+                opacity:1;
+            }
+
+        }
+
+
+        @keyframes nodeAffected{
+
+            0%{
+                transform:scale(.8);
+                opacity:0;
+            }
+
+            100%{
+                transform:scale(1);
+                opacity:1;
+            }
+
+        }
+
+
+        /*
+         * NODE POSITIONS
+         */
+
+        .node[data-node="B01"]{
+            left:8%;
+            top:42%;
+        }
+
+        .node[data-node="S01"]{
+            left:26%;
+            top:15%;
+        }
+
+        .node[data-node="R01"]{
+            left:30%;
+            top:43%;
+        }
+
+        .node[data-node="W01"]{
+            left:28%;
+            bottom:13%;
+        }
+
+        .node[data-node="V01"]{
+            left:53%;
+            top:42%;
+        }
+
+        .node[data-node="P01"]{
+            left:55%;
+            bottom:13%;
+        }
+
+        .node[data-node="C01"]{
+            right:15%;
+            top:25%;
+        }
+
+        .node[data-node="H01"]{
+            right:8%;
+            top:58%;
+        }
+
+
+        /*
+         * =====================================================
+         * ARROWS
+         * =====================================================
+         */
+
+        .arrow{
+
+            position:absolute;
+
+            z-index:3;
+
+            height:2px;
+
+            background:
+                rgba(119,154,133,.15);
+
+            transform-origin:left center;
+
+            transition:
+                background .3s;
+
+        }
+
+
+        .arrow.active{
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(156,229,185,.2),
+                    #9ce5b9
+                );
+
+            box-shadow:
+                0 0 12px
+                rgba(156,229,185,.35);
+
+            animation:
+                flow .8s ease
+                both;
+
+        }
+
+
+        @keyframes flow{
+
+            from{
+                opacity:0;
+                transform:scaleX(0);
+            }
+
+            to{
+                opacity:1;
+                transform:scaleX(1);
+            }
+
+        }
+
+
+        .arrow[data-from="B01"][data-to="R01"]{
+            width:22%;
+            left:17%;
+            top:48%;
+        }
+
+        .arrow[data-from="R01"][data-to="V01"]{
+            width:23%;
+            left:41%;
+            top:48%;
+        }
+
+        .arrow[data-from="V01"][data-to="C01"]{
+            width:20%;
+            left:63%;
+            top:43%;
+            transform:rotate(-25deg);
+        }
+
+        .arrow[data-from="C01"][data-to="H01"]{
+            width:18%;
+            left:77%;
+            top:52%;
+            transform:rotate(55deg);
+        }
+
+        .arrow[data-from="S01"][data-to="R01"]{
+            width:25%;
+            left:34%;
+            top:31%;
+            transform:rotate(72deg);
+        }
+
+        .arrow[data-from="W01"][data-to="V01"]{
+            width:28%;
+            left:39%;
+            bottom:24%;
+            transform:rotate(-20deg);
+        }
+
+        .arrow[data-from="P01"][data-to="C01"]{
+            width:22%;
+            left:63%;
+            bottom:24%;
+            transform:rotate(-72deg);
+        }
+
+        .arrow[data-from="P01"][data-to="V01"]{
+            width:18%;
+            left:61%;
+            bottom:25%;
+            transform:rotate(-150deg);
+        }
+
+        .arrow[data-from="C01"][data-to="V01"]{
+            width:20%;
+            left:68%;
+            top:38%;
+            transform:rotate(160deg);
+        }
+
+        .arrow[data-from="V01"][data-to="H01"]{
+            width:25%;
+            left:64%;
+            top:53%;
+        }
+
+        .arrow[data-from="R01"][data-to="C01"]{
+            width:35%;
+            left:42%;
+            top:45%;
+            transform:rotate(-25deg);
+        }
+
+        .arrow[data-from="H01"][data-to="C01"]{
+            width:17%;
+            left:77%;
+            top:62%;
+            transform:rotate(-125deg);
+        }
+
+
+        /*
+         * =====================================================
+         * RIGHT PANEL
+         * =====================================================
+         */
+
+        .scenario-panel{
+
+            display:flex;
+
+            flex-direction:column;
+
+            gap:14px;
+
+        }
+
+
+        .panel-card{
+
+            padding:
+                22px;
+
+            border:
+                1px solid
+                rgba(156,229,185,.12);
+
+            border-radius:
+                20px;
+
+            background:
+                rgba(255,255,255,.025);
+
+            box-shadow:
+                0 20px 60px
+                rgba(0,0,0,.2);
+
+        }
+
+
+        .panel-card > span{
+
+            display:block;
+
+            font:
+                9px "DM Mono",
+                monospace;
+
+            letter-spacing:
+                .14em;
+
+            color:
+                #6d8878;
+
+        }
+
+
+        .panel-card h3{
+
+            margin:
+                9px 0 18px;
+
+            font-size:
+                22px;
+
+            color:
+                #eafff0;
+
+        }
+
+
+        .priority-row{
+
+            display:flex;
+
+            justify-content:
+                space-between;
+
+            align-items:center;
+
+            gap:15px;
+
+            padding:
+                12px 0;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,.055);
+
+        }
+
+
+        .priority-row:last-child{
+
+            border-bottom:
+                0;
+
+        }
+
+
+        .priority-row span{
+
+            color:
+                #a5b8aa;
+
+            font:
+                11px Manrope,
+                sans-serif;
+
+            letter-spacing:
+                0;
+
+        }
+
+
+        .priority-row b{
+
+            color:
+                #dcefe1;
+
+            font:
+                9px "DM Mono",
+                monospace;
+
+            text-align:
+                right;
+
+        }
+
+
+        .guidance-box{
+
+            border:
+                1px solid
+                rgba(156,229,185,.18);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(156,229,185,.08),
+                    rgba(156,229,185,.025)
+                );
+
+        }
+
+
+        .guidance-box p{
+
+            margin:
+                0;
+
+            color:
+                #b9cbbf;
+
+            font-size:
+                12px;
+
+            line-height:
+                1.7;
+
+        }
+
+
+        .scenario-actions{
+
+            display:flex;
+
+            gap:10px;
+
+            margin-top:
+                4px;
+
+        }
+
+
+        .scenario-actions a{
+
+            flex:1;
+
+            display:flex;
+
+            justify-content:center;
+
+            align-items:center;
+
+            min-height:
+                45px;
+
+            border-radius:
+                12px;
+
+            text-decoration:
+                none;
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+
+        }
+
+
+        .primary-action{
+
+            background:
+                #a1e4b8;
+
+            color:
+                #07110b;
+
+        }
+
+
+        .secondary-action{
+
+            border:
+                1px solid
+                rgba(156,229,185,.16);
+
+            color:
+                #a9c1b0;
+
+            background:
+                rgba(255,255,255,.025);
+
+        }
+
+
+        /*
+         * =====================================================
+         * RESPONSIVE
+         * =====================================================
+         */
+
+        @media(max-width:950px){
+
+            .scenario-layout{
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .cascade-map{
+
+                min-height:
+                    550px;
+
+            }
+
+        }
+
+
+        @media(max-width:700px){
+
+            .scenario-page{
+
+                width:
+                    92vw;
+
+            }
+
+
+            .scenario-top{
+
+                flex-direction:
+                    column;
+
+            }
+
+
+            .scenario-metrics{
+
+                grid-template-columns:
+                    repeat(2,1fr);
+
+            }
+
+
+            .cascade-map{
+
+                min-height:
+                    470px;
+
+            }
+
+
+            .node{
+
+                width:
+                    92px;
+
+                padding:
+                    10px;
+
+            }
+
+
+            .node b{
+
+                font-size:
+                    10px;
+
+            }
+
+
+            .node[data-node="B01"]{
+                left:4%;
+            }
+
+            .node[data-node="H01"]{
+                right:3%;
+            }
+
+        }
+
+
+        @media(max-width:480px){
+
+            .scenario-metrics{
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .cascade-map{
+
+                min-height:
+                    430px;
+
+            }
+
+
+            .scenario-title{
+
+                font-size:
+                    40px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body data-page="scenario">
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="site-header">
+
+        <div class="brand">
+
+            <span>
+                PARVAT
+            </span>
+
+            <small>
+                HIMALAYAN RESILIENCE INTELLIGENCE
+            </small>
+
+        </div>
+
+
+        <nav class="main-nav">
+
+            <a href="dashboard.html">
+                COMMAND CENTER
+            </a>
+
+            <a href="simulate.html">
+                WHAT-IF
+            </a>
+
+            <a href="report.html">
+                REPORT
+            </a>
+
+            <a href="stuck.html">
+                I'M STUCK
+            </a>
+
+        </nav>
+
+    </header>
+
+
+
+    <main class="scenario-page">
+
+
+        <!-- =================================================
+             HERO
+             ================================================= -->
+
+        <section class="scenario-top">
+
+            <div>
+
+                <div class="scenario-kicker">
+                    PARVAT / SCENARIO INTELLIGENCE
+                </div>
+
+
+                <h1
+                    class="scenario-title"
+                    id="scenarioTitle"
+                >
+                    Running cascade analysis...
+                </h1>
+
+
+                <p
+                    class="scenario-sub"
+                    id="scenarioSub"
+                >
+                    PARVAT is tracing how the selected disruption propagates through connected infrastructure.
+                </p>
+
+            </div>
+
+
+            <div
+                class="model-status"
+                id="modelStatus"
+            >
+                ● CONNECTING TO PARVAT MODEL
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             METRICS
+             ================================================= -->
+
+        <section class="scenario-metrics">
+
+
+            <div class="metric-card">
+
+                <span>
+                    CASCADE RISK
+                </span>
+
+                <strong>
+
+                    <span id="riskValue">
+                        --
+                    </span>
+
+                    <small>
+                        /100
+                    </small>
+
+                </strong>
+
+
+                <div class="meter">
+
+                    <div
+                        id="meterFill"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="metric-card">
+
+                <span>
+                    TRIGGER NODE
+                </span>
+
+                <strong
+                    id="triggerNode"
+                >
+                    --
+                </strong>
+
+                <small>
+                    Initial disruption
+                </small>
+
+            </div>
+
+
+
+            <div class="metric-card">
+
+                <span>
+                    AFFECTED NODES
+                </span>
+
+                <strong
+                    id="affectedOut"
+                >
+                    --
+                </strong>
+
+                <small>
+                    Connected infrastructure
+                </small>
+
+            </div>
+
+
+
+            <div class="metric-card">
+
+                <span>
+                    RAINFALL LOAD
+                </span>
+
+                <strong
+                    id="rainOut"
+                >
+                    --
+                </strong>
+
+                <small>
+                    Scenario input
+                </small>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             MAIN
+             ================================================= -->
+
+        <section class="scenario-layout">
+
+
+            <!-- =============================================
+                 CASCADE MAP
+                 ============================================= -->
+
+            <div class="cascade-map">
+
+
+                <div class="map-label">
+
+                    PARVAT CASCADE GRAPH
+
+                    <b>
+                        CONNECTED INFRASTRUCTURE
+                    </b>
+
+                </div>
+
+
+
+                <!-- NODES -->
+
+                <div
+                    class="node"
+                    data-node="B01"
+                >
+
+                    <span>
+                        B01
+                    </span>
+
+                    <b>
+                        Bridge
+                    </b>
+
+                </div>
+
+
+                <div
+                    class="node"
+                    data-node="S01"
+                >
+
+                    <span>
+                        S01
+                    </span>
+
+                    <b>
+                        Slope
+                    </b>
+
+                </div>
+
+
+                <div
+                    class="node"
+                    data-node="R01"
+                >
+
+                    <span>
+                        R01
+                    </span>
+
+                    <b>
+                        Road
+                    </b>
+
+                </div>
+
+
+                <div
+                    class="node"
+                    data-node="W01"
+                >
+
+                    <span>
+                        W01
+                    </span>
+
+                    <b>
+                        Water
+                    </b>
+
+                </div>
+
+
+                <div
+                    class="node"
+                    data-node="V01"
+                >
+
+                    <span>
+                        V01
+                    </span>
+
+                    <b>
+                        Village
+                    </b>
+
+                </div>
+
+
+                <div
+                    class="node"
+                    data-node="P01"
+                >
+
+                    <span>
+                        P01
+                    </span>
+
+                    <b>
+                        Power
+                    </b>
+
+                </div>
+
+
+                <div
+                    class="node"
+                    data-node="C01"
+                >
+
+                    <span>
+                        C01
+                    </span>
+
+                    <b>
+                        Communications
+                    </b>
+
+                </div>
+
+
+                <div
+                    class="node"
+                    data-node="H01"
+                >
+
+                    <span>
+                        H01
+                    </span>
+
+                    <b>
+                        Hospital
+                    </b>
+
+                </div>
+
+
+
+                <!-- ARROWS -->
+
+                <div
+                    class="arrow"
+                    data-from="B01"
+                    data-to="R01"
+                ></div>
+
+
+                <div
+                    class="arrow"
+                    data-from="R01"
+                    data-to="V01"
+                ></div>
+
+
+                <div
+                    class="arrow"
+                    data-from="V01"
+                    data-to="C01"
+                ></div>
+
+
+                <div
+                    class="arrow"
+                    data-from="C01"
+                    data-to="H01"
+                ></div>
+
+
+                <div
+                    class="arrow"
+                    data-from="S01"
+                    data-to="R01"
+                ></div>
+
+
+                <div
+                    class="arrow"
+                    data-from="W01"
+                    data-to="V01"
+                ></div>
+
+
+                <div
+                    class="arrow"
+                    data-from="P01"
+                    data-to="C01"
+                ></div>
+
+
+                <div
+                    class="arrow"
+                    data-from="P01"
+                    data-to="V01"
+                ></div>
+
+
+                <div
+                    class="arrow"
+                    data-from="C01"
+                    data-to="V01"
+                ></div>
+
+
+                <div
+                    class="arrow"
+                    data-from="V01"
+                    data-to="H01"
+                ></div>
+
+
+                <div
+                    class="arrow"
+                    data-from="R01"
+                    data-to="C01"
+                ></div>
+
+
+                <div
+                    class="arrow"
+                    data-from="H01"
+                    data-to="C01"
+                ></div>
+
+            </div>
+
+
+
+            <!-- =============================================
+                 RIGHT PANEL
+                 ============================================= -->
+
+            <aside class="scenario-panel">
+
+
+                <div class="panel-card">
+
+                    <span>
+                        SCENARIO INPUT
+                    </span>
+
+
+                    <h3>
+                        Selected conditions
+                    </h3>
+
+
+                    <div class="priority-row">
+
+                        <span>
+                            Hazard
+                        </span>
+
+                        <b id="hazardOut">
+                            --
+                        </b>
+
+                    </div>
+
+
+                    <div class="priority-row">
+
+                        <span>
+                            Trigger
+                        </span>
+
+                        <b id="triggerNode">
+                            --
+                        </b>
+
+                    </div>
+
+
+                    <div class="priority-row">
+
+                        <span>
+                            Rainfall
+                        </span>
+
+                        <b id="rainOut">
+                            --
+                        </b>
+
+                    </div>
+
+
+                    <div class="priority-row">
+
+                        <span>
+                            Nodes affected
+                        </span>
+
+                        <b id="affectedOut">
+                            --
+                        </b>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="panel-card">
+
+                    <span>
+                        IMPACT PRIORITY
+                    </span>
+
+
+                    <h3>
+                        Where attention goes first
+                    </h3>
+
+
+                    <div
+                        id="priorityList"
+                    >
+
+                        <div class="priority-row">
+
+                            <span>
+                                Analyzing...
+                            </span>
+
+                            <b>
+                                --
+                            </b>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div
+                    class="panel-card guidance-box"
+                >
+
+                    <span>
+                        RESPONSE GUIDANCE
+                    </span>
+
+
+                    <h3>
+                        What PARVAT sees next
+                    </h3>
+
+
+                    <p id="guidance">
+                        Waiting for the scenario engine...
+                    </p>
+
+                </div>
+
+
+
+                <div class="scenario-actions">
+
+                    <a
+                        href="simulate.html"
+                        class="primary-action"
+                    >
+                        RUN ANOTHER
+                    </a>
+
+
+                    <a
+                        href="dashboard.html"
+                        class="secondary-action"
+                    >
+                        COMMAND CENTER
+                    </a>
+
+                </div>
+
+
+            </aside>
+
+        </section>
+
+    </main>
+
+
+
+    <script
+        src="assets/app.js"
+    ></script>
+
+</body>
+
+</html>

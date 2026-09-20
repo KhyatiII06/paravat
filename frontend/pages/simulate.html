@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>What-If Engine — PARVAT</title>
+
+  <link rel="stylesheet" href="../assets/style.css">
+
+  <style>
+    /* =========================================================
+       PARVAT WHAT-IF — SCENARIO LAB
+       ========================================================= */
+
+    .whatif-page {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(90, 150, 125, .10), transparent 32%),
+        radial-gradient(circle at 85% 70%, rgba(190, 145, 70, .07), transparent 28%),
+        #07110e;
+    }
+
+    .whatif-shell {
+      width: min(1380px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 70px 0 100px;
+    }
+
+    /* =========================
+       TOP INTRO
+       ========================= */
+
+    .whatif-intro {
+      position: relative;
+      max-width: 1050px;
+      margin: 0 auto 42px;
+      text-align: center;
+    }
+
+    .whatif-intro::before {
+      content: "";
+      position: absolute;
+      width: 520px;
+      height: 520px;
+      left: 50%;
+      top: -250px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        rgba(109, 164, 137, .13),
+        transparent 68%
+      );
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border: 1px solid rgba(150, 190, 165, .20);
+      border-radius: 999px;
+      background: rgba(255,255,255,.035);
+      color: #91b8a3;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .18em;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #74bd91;
+      box-shadow: 0 0 12px rgba(116,189,145,.8);
+    }
+
+    .whatif-intro h1 {
+      margin: 22px 0 18px;
+      font-size: clamp(42px, 6vw, 82px);
+      line-height: .96;
+      letter-spacing: -.055em;
+      font-weight: 700;
+    }
+
+    .whatif-intro h1 em {
+      font-style: normal;
+      color: #8fbea2;
+    }
+
+    .whatif-intro p {
+      max-width: 690px;
+      margin: 0 auto;
+      color: rgba(235,245,240,.62);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    /* =========================
+       CASCADE EXPLANATION
+       ========================= */
+
+    .mini-chain {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 13px;
+      margin-top: 28px;
+      color: rgba(235,245,240,.45);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .14em;
+    }
+
+    .mini-chain span {
+      padding: 10px 13px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 7px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .mini-chain span:first-child {
+      color: #d9a86c;
+      border-color: rgba(217,168,108,.25);
+    }
+
+    .mini-chain span:last-child {
+      color: #8fc2a5;
+      border-color: rgba(143,194,165,.25);
+    }
+
+    .mini-chain i {
+      font-style: normal;
+      color: rgba(255,255,255,.25);
+      font-size: 16px;
+    }
+
+    /* =========================
+       MAIN LAB
+       ========================= */
+
+    .whatif-card {
+      position: relative;
+      width: min(850px, 100%);
+      margin: 0 auto;
+      padding: 34px;
+      border: 1px solid rgba(165,195,177,.14);
+      border-radius: 24px;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,.055),
+          rgba(255,255,255,.018)
+        );
+      box-shadow:
+        0 35px 100px rgba(0,0,0,.34),
+        inset 0 1px 0 rgba(255,255,255,.04);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+    }
+
+    .whatif-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(130,185,150,.55),
+        transparent
+      );
+    }
+
+    .whatif-card::after {
+      content: "PARVAT // SCENARIO ENGINE";
+      position: absolute;
+      right: 28px;
+      top: 25px;
+      color: rgba(255,255,255,.16);
+      font-family: monospace;
+      font-size: 9px;
+      letter-spacing: .15em;
+    }
+
+    /* =========================
+       FIELDS
+       ========================= */
+
+    .field {
+      margin-bottom: 25px;
+    }
+
+    .field label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 9px;
+      color: rgba(230,242,235,.48);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .16em;
+    }
+
+    .field output {
+      color: #a8cdb5;
+      font-family: monospace;
+      font-size: 11px;
+      letter-spacing: .04em;
+    }
+
+    .field select {
+      width: 100%;
+      min-height: 54px;
+      padding: 0 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 12px;
+      outline: none;
+      color: #e9f1ed;
+      background: rgba(5,16,13,.75);
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      transition: .25s ease;
+    }
+
+    .field select:hover,
+    .field select:focus {
+      border-color: rgba(133,190,151,.45);
+      box-shadow: 0 0 0 3px rgba(133,190,151,.06);
+    }
+
+    .field select option {
+      background: #091511;
+      color: white;
+    }
+
+    /* =========================
+       SLIDERS
+       ========================= */
+
+    .field input[type="range"] {
+      width: 100%;
+      appearance: none;
+      height: 4px;
+      border-radius: 99px;
+      outline: none;
+      cursor: pointer;
+      background:
+        linear-gradient(
+          90deg,
+          #78ae8c 0%,
+          #78ae8c var(--value, 50%),
+          rgba(255,255,255,.10) var(--value, 50%),
+          rgba(255,255,255,.10) 100%
+        );
+    }
+
+    .field input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      border: 3px solid #0a1712;
+      background: #a5cdb3;
+      box-shadow:
+        0 0 0 1px rgba(165,205,179,.4),
+        0 0 20px rgba(120,174,140,.35);
+      cursor: pointer;
+    }
+
+    .field input[type="range"]::-moz-range-thumb {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 3px solid #0a1712;
+      background: #a5cdb3;
+      cursor: pointer;
+    }
+
+    /* =========================
+       LIVE SCENARIO PREVIEW
+       ========================= */
+
+    .scenario-preview {
+      position: relative;
+      margin-top: 34px;
+      padding: 22px 22px 22px 25px;
+      border-left: 2px solid #9d7a4b;
+      border-radius: 0 14px 14px 0;
+      background:
+        linear-gradient(
+          90deg,
+          rgba(157,122,75,.11),
+          rgba(157,122,75,.025)
+        );
+    }
+
+    .scenario-preview::before {
+      content: "";
+      position: absolute;
+      left: -5px;
+      top: 25px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #c19a62;
+      box-shadow: 0 0 18px rgba(193,154,98,.7);
+    }
+
+    .scenario-preview span {
+      display: block;
+      margin-bottom: 7px;
+      color: #b99769;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .17em;
+    }
+
+    .scenario-preview b {
+      display: block;
+      color: rgba(242,247,244,.82);
+      font-size: 15px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    /* =========================
+       RUN BUTTON
+       ========================= */
+
+    .run-big {
+      position: relative;
+      width: 100%;
+      min-height: 64px;
+      margin-top: 24px;
+      border: 0;
+      border-radius: 13px;
+      color: #06100c;
+      background: linear-gradient(
+        100deg,
+        #9bc8a9,
+        #d0dfbf
+      );
+      font-weight: 800;
+      letter-spacing: .08em;
+      cursor: pointer;
+      overflow: hidden;
+      transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+    }
+
+    .run-big::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        110deg,
+        transparent 20%,
+        rgba(255,255,255,.55) 50%,
+        transparent 80%
+      );
+      transform: translateX(-120%);
+      transition: transform .7s ease;
+    }
+
+    .run-big:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 15px 35px rgba(110,170,130,.20),
+        0 0 35px rgba(110,170,130,.08);
+    }
+
+    .run-big:hover::before {
+      transform: translateX(120%);
+    }
+
+    .run-big span {
+      margin-left: 12px;
+      font-size: 20px;
+    }
+
+    .prototype-note {
+      margin: 16px 0 0;
+      text-align: center;
+      color: rgba(230,240,235,.30);
+      font-size: 10px;
+      letter-spacing: .04em;
+    }
+
+    /* =========================
+       BOTTOM SIGNALS
+       ========================= */
+
+    .whatif-signals {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: min(850px, 100%);
+      margin: 18px auto 0;
+    }
+
+    .signal {
+      padding: 15px;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 12px;
+      background: rgba(255,255,255,.018);
+      text-align: center;
+    }
+
+    .signal strong {
+      display: block;
+      margin-bottom: 5px;
+      color: rgba(235,245,240,.62);
+      font-family: monospace;
+      font-size: 11px;
+    }
+
+    .signal span {
+      color: rgba(235,245,240,.30);
+      font-size: 9px;
+      letter-spacing: .08em;
+    }
+
+    /* =========================
+       MOBILE
+       ========================= */
+
+    @media (max-width: 700px) {
+
+      .whatif-shell {
+        width: min(100% - 24px, 1380px);
+        padding-top: 45px;
+      }
+
+      .whatif-intro h1 {
+        font-size: clamp(39px, 13vw, 60px);
+      }
+
+      .whatif-intro p {
+        font-size: 14px;
+      }
+
+      .mini-chain {
+        gap: 7px;
+      }
+
+      .mini-chain span {
+        padding: 8px 9px;
+        font-size: 8px;
+      }
+
+      .mini-chain i {
+        font-size: 12px;
+      }
+
+      .whatif-card {
+        padding: 23px 18px;
+        border-radius: 18px;
+      }
+
+      .whatif-card::after {
+        display: none;
+      }
+
+      .whatif-signals {
+        grid-template-columns: 1fr;
+      }
+
+      .field {
+        margin-bottom: 21px;
+      }
+    }
+  </style>
+</head>
+
+<body class="app whatif-page" data-page="simulate">
+
+<header class="topbar">
+
+  <a class="brand" href="../index.html">
+    PARVAT
+    <small>SCENARIO LAB</small>
+  </a>
+
+  <nav>
+    <a href="dashboard.html">Command Center</a>
+    <a class="active" href="simulate.html">What If?</a>
+    <a href="report.html">Report</a>
+    <a class="nav-emergency" href="stuck.html">I'm Stuck</a>
+  </nav>
+
+  <div class="live">
+    <i></i>
+    <span data-health>CHECKING</span>
+  </div>
+
+</header>
+
+
+<main class="whatif-shell">
+
+  <!-- =========================
+       INTRO
+       ========================= -->
+
+  <section class="whatif-intro">
+
+    <div class="eyebrow">
+      ASK THE MOUNTAIN
+    </div>
+
+    <h1>
+      Change one condition.<br>
+      <em>See the cascade.</em>
+    </h1>
+
+    <p>
+      PARVAT does not stop at identifying a hazard.
+      Build a hypothetical mountain scenario and see how
+      one failure can propagate through infrastructure,
+      communities and essential services.
+    </p>
+
+    <div class="mini-chain">
+
+      <span>HAZARD</span>
+      <i>→</i>
+
+      <span>INFRASTRUCTURE</span>
+      <i>→</i>
+
+      <span>COMMUNITY</span>
+      <i>→</i>
+
+      <span>SERVICE</span>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       SCENARIO BUILDER
+       ========================= -->
+
+  <section class="whatif-card">
+
+    <div class="field">
+
+      <label>
+        <span>WHAT CHANGES?</span>
+      </label>
+
+      <select id="hazard">
+
+        <option value="landslide">
+          Landslide
+        </option>
+
+        <option value="flood">
+          Flash flood
+        </option>
+
+        <option value="snowfall">
+          Heavy snowfall
+        </option>
+
+        <option value="forest_fire">
+          Forest fire
+        </option>
+
+        <option value="bridge">
+          Bridge failure
+        </option>
+
+        <option value="road">
+          Road blockage
+        </option>
+
+        <option value="communication">
+          Communication outage
+        </option>
+
+        <option value="power">
+          Power failure
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        <span>FIRST AFFECTED LINK</span>
+      </label>
+
+      <select id="infra">
+
+        <option value="B01">
+          Bridge · B01
+        </option>
+
+        <option value="R01">
+          Road · R01
+        </option>
+
+        <option value="V01">
+          Village · V01
+        </option>
+
+        <option value="H01">
+          Hospital · H01
+        </option>
+
+        <option value="S01">
+          School · S01
+        </option>
+
+        <option value="W01">
+          Water · W01
+        </option>
+
+        <option value="P01">
+          Power · P01
+        </option>
+
+        <option value="C01">
+          Communications · C01
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+
+        <span>
+          RAINFALL / ENVIRONMENTAL STRESS
+        </span>
+
+        <output id="rainOut">
+          128 mm
+        </output>
+
+      </label>
+
+      <input
+        id="rainfall"
+        type="range"
+        min="0"
+        max="250"
+        value="128"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+
+        <span>
+          FAILURE SEVERITY
+        </span>
+
+        <output id="sevOut">
+          70%
+        </output>
+
+      </label>
+
+      <input
+        id="severity"
+        type="range"
+        min="0"
+        max="100"
+        value="70"
+      >
+
+    </div>
+
+
+    <!-- =========================
+         LIVE PREVIEW
+         ========================= -->
+
+    <div class="scenario-preview">
+
+      <span>
+        LIVE SCENARIO PREVIEW
+      </span>
+
+      <b id="previewText">
+        A landslide begins to stress the bridge network.
+      </b>
+
+    </div>
+
+
+    <!-- =========================
+         ACTION
+         ========================= -->
+
+    <button
+      class="btn primary run-big"
+      id="run"
+      type="button"
+    >
+      RUN CASCADE
+      <span>→</span>
+    </button>
+
+    <p class="prototype-note">
+      Prototype model · outputs are simulated decision-support signals,
+      not emergency forecasts.
+    </p>
+
+  </section>
+
+
+  <!-- =========================
+       WHAT PARVAT WILL SHOW
+       ========================= -->
+
+  <section class="whatif-signals">
+
+    <div class="signal">
+      <strong>01 · CASCADE</strong>
+      <span>WHAT FAILS NEXT</span>
+    </div>
+
+    <div class="signal">
+      <strong>02 · IMPACT</strong>
+      <span>WHO / WHAT IS AFFECTED</span>
+    </div>
+
+    <div class="signal">
+      <strong>03 · RESPONSE</strong>
+      <span>WHAT SHOULD BE PRIORITIZED</span>
+    </div>
+
+  </section>
+
+</main>
+
+
+<script src="../assets/config.js"></script>
+<script src="../assets/app.js"></script>
+
+
+<script>
+  /* =========================================================
+     LIVE WHAT-IF PREVIEW
+     ========================================================= */
+
+  const hazardEl = document.getElementById("hazard");
+  const infraEl = document.getElementById("infra");
+
+  const rainfallEl = document.getElementById("rainfall");
+  const severityEl = document.getElementById("severity");
+
+  const rainOut = document.getElementById("rainOut");
+  const sevOut = document.getElementById("sevOut");
+
+  const previewText = document.getElementById("previewText");
+
+
+  const hazardNames = {
+    landslide: "landslide",
+    flood: "flash flood",
+    snowfall: "heavy snowfall",
+    forest_fire: "forest fire",
+    bridge: "bridge failure",
+    road: "road blockage",
+    communication: "communication outage",
+    power: "power failure"
+  };
+
+
+  const infraNames = {
+    B01: "bridge network",
+    R01: "road network",
+    V01: "village",
+    H01: "hospital access",
+    S01: "school network",
+    W01: "water supply",
+    P01: "power network",
+    C01: "communication network"
+  };
+
+
+  function updateSliderVisual(input) {
+
+    const min = Number(input.min);
+    const max = Number(input.max);
+    const value = Number(input.value);
+
+    const percentage =
+      ((value - min) / (max - min)) * 100;
+
+    input.style.setProperty(
+      "--value",
+      percentage + "%"
+    );
+  }
+
+
+  function updatePreview() {
+
+    const hazard =
+      hazardNames[hazardEl.value] ||
+      hazardEl.value;
+
+    const infrastructure =
+      infraNames[infraEl.value] ||
+      infraEl.value;
+
+    const rainfall =
+      Number(rainfallEl.value);
+
+    const severity =
+      Number(severityEl.value);
+
+
+    rainOut.textContent =
+      rainfall + " mm";
+
+    sevOut.textContent =
+      severity + "%";
+
+
+    updateSliderVisual(rainfallEl);
+    updateSliderVisual(severityEl);
+
+
+    let intensity = "begins to stress";
+
+    if (severity >= 85) {
+      intensity = "severely disrupts";
+    } else if (severity >= 65) {
+      intensity = "heavily stresses";
+    } else if (severity >= 40) {
+      intensity = "starts affecting";
+    }
+
+
+    previewText.textContent =
+      `A ${hazard} ${intensity} the ${infrastructure}.`;
+  }
+
+
+  hazardEl.addEventListener(
+    "change",
+    updatePreview
+  );
+
+  infraEl.addEventListener(
+    "change",
+    updatePreview
+  );
+
+  rainfallEl.addEventListener(
+    "input",
+    updatePreview
+  );
+
+  severityEl.addEventListener(
+    "input",
+    updatePreview
+  );
+
+
+  updatePreview();
+
+
+  /* =========================================================
+     RUN CASCADE
+     
+     This keeps the page compatible with the PARVAT
+     scenario.html flow and sends failed_node correctly.
+     ========================================================= */
+
+  const runButton =
+    document.getElementById("run");
+
+
+  runButton.addEventListener("click", function () {
+
+    const params = new URLSearchParams({
+
+      hazard: hazardEl.value,
+
+      failed_node: infraEl.value,
+
+      rainfall:
+        rainfallEl.value,
+
+      severity:
+        (Number(severityEl.value) / 100).toFixed(2)
+
+    });
+
+
+    runButton.disabled = true;
+
+    runButton.innerHTML =
+      'ANALYZING CASCADE <span>⟳</span>';
+
+
+    /*
+      Small transition delay makes the action feel
+      intentional before opening the dedicated
+      Scenario Intelligence page.
+    */
+
+    setTimeout(() => {
+
+      window.location.href =
+        `scenario.html?${params.toString()}`;
+
+    }, 450);
+
+  });
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,983 @@
+```html
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Command Center — PARVAT</title>
+
+    <link rel="stylesheet" href="../assets/style.css">
+
+    <style>
+        /* =========================================================
+           COMMAND CENTER — DASHBOARD ENHANCEMENT
+        ========================================================= */
+
+        .command-hero {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 18px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 24px;
+            background:
+                radial-gradient(circle at 85% 15%, rgba(91,168,138,.16), transparent 30%),
+                radial-gradient(circle at 15% 90%, rgba(57,103,84,.12), transparent 35%),
+                linear-gradient(135deg, rgba(14,28,23,.96), rgba(8,15,13,.98));
+            box-shadow: 0 25px 80px rgba(0,0,0,.25);
+        }
+
+        .command-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: linear-gradient(to bottom, black, transparent);
+        }
+
+        .command-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 850px;
+        }
+
+        .command-kicker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-family: "DM Mono", monospace;
+            font-size: 11px;
+            letter-spacing: .16em;
+            color: #91c9ae;
+        }
+
+        .command-kicker .pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #72d19f;
+            box-shadow: 0 0 16px rgba(114,209,159,.8);
+            animation: commandPulse 1.8s infinite;
+        }
+
+        @keyframes commandPulse {
+            0%,100% {
+                opacity: .45;
+                transform: scale(.8);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.15);
+            }
+        }
+
+        .command-hero h1 {
+            margin: 0;
+            font-size: clamp(38px, 6vw, 72px);
+            line-height: .96;
+            letter-spacing: -.045em;
+        }
+
+        .command-hero h1 span {
+            color: #8bc5a7;
+            font-style: italic;
+        }
+
+        .command-hero p {
+            max-width: 680px;
+            margin: 18px 0 0;
+            color: rgba(255,255,255,.62);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* COMMAND STATUS */
+
+        .command-intelligence {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            align-items: center;
+            margin: 0 0 18px;
+            padding: 16px 20px;
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 16px;
+            background: rgba(255,255,255,.025);
+        }
+
+        .command-live {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .live-dot {
+            width: 9px;
+            height: 9px;
+            flex: 0 0 9px;
+            border-radius: 50%;
+            background: #73d19e;
+            box-shadow: 0 0 14px rgba(115,209,158,.7);
+        }
+
+        .command-live small,
+        .command-summary span {
+            display: block;
+            font-family: "DM Mono", monospace;
+            font-size: 9px;
+            letter-spacing: .13em;
+            color: rgba(255,255,255,.4);
+        }
+
+        .command-live strong {
+            display: block;
+            margin-top: 3px;
+            font-size: 13px;
+            letter-spacing: .06em;
+        }
+
+        .command-summary {
+            display: flex;
+            gap: 25px;
+        }
+
+        .command-summary div {
+            min-width: 80px;
+        }
+
+        .command-summary strong {
+            display: block;
+            margin-top: 5px;
+            font-family: "DM Mono", monospace;
+            font-size: 12px;
+            color: #91c9ae;
+        }
+
+        /* REGION CARDS */
+
+        .region-dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .region-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 220px;
+            padding: 22px;
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 20px;
+            background: linear-gradient(
+                145deg,
+                rgba(255,255,255,.045),
+                rgba(255,255,255,.015)
+            );
+            transition: .35s ease;
+            cursor: pointer;
+        }
+
+        .region-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(130,195,162,.35);
+            box-shadow: 0 18px 50px rgba(0,0,0,.25);
+        }
+
+        .region-card::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            right: -80px;
+            bottom: -100px;
+            border-radius: 50%;
+            background: rgba(112,180,143,.08);
+            filter: blur(5px);
+        }
+
+        .region-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .region-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .region-code {
+            font-family: "DM Mono", monospace;
+            font-size: 9px;
+            color: rgba(255,255,255,.35);
+            letter-spacing: .1em;
+        }
+
+        .region-weather {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 28px;
+        }
+
+        .region-icon {
+            font-size: 38px;
+            line-height: 1;
+        }
+
+        .region-temp {
+            font-family: "DM Mono", monospace;
+            font-size: 38px;
+            letter-spacing: -.05em;
+        }
+
+        .region-condition {
+            margin-top: 3px;
+            color: rgba(255,255,255,.55);
+            font-size: 12px;
+        }
+
+        .region-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            margin-top: 25px;
+        }
+
+        .region-risk-label {
+            font-family: "DM Mono", monospace;
+            font-size: 9px;
+            color: rgba(255,255,255,.38);
+            letter-spacing: .1em;
+        }
+
+        .region-risk {
+            margin-top: 5px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .region-rain {
+            text-align: right;
+            font-family: "DM Mono", monospace;
+            font-size: 11px;
+            color: rgba(255,255,255,.55);
+        }
+
+        /* SELECTED REGION */
+
+        .intelligence-panel {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intelligence-panel::before {
+            content: "REGIONAL INTELLIGENCE";
+            position: absolute;
+            right: 18px;
+            top: 16px;
+            font-family: "DM Mono", monospace;
+            font-size: 8px;
+            letter-spacing: .14em;
+            color: rgba(255,255,255,.15);
+        }
+
+        .signal-line {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .signal-score {
+            display: grid;
+            place-items: center;
+            width: 92px;
+            height: 92px;
+            flex: 0 0 92px;
+            border: 1px solid rgba(125,195,157,.25);
+            border-radius: 50%;
+            background: radial-gradient(
+                circle,
+                rgba(104,168,130,.15),
+                rgba(104,168,130,.025) 65%
+            );
+            font-family: "DM Mono", monospace;
+            font-size: 25px;
+            color: #9ed3b5;
+        }
+
+        .signal-line b {
+            font-size: 16px;
+        }
+
+        .signal-line p {
+            margin-top: 7px;
+            color: rgba(255,255,255,.48);
+            line-height: 1.55;
+        }
+
+        .drivers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-top: 20px;
+        }
+
+        .drivers > * {
+            padding: 7px 10px;
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 999px;
+            background: rgba(255,255,255,.025);
+            font-family: "DM Mono", monospace;
+            font-size: 9px;
+            color: rgba(255,255,255,.55);
+        }
+
+        .asset-strip {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 18px;
+        }
+
+        .asset-strip > * {
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,.06);
+            border-radius: 10px;
+            background: rgba(0,0,0,.12);
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 22px;
+        }
+
+        /* DIGITAL TWIN */
+
+        .map {
+            min-height: 430px;
+            overflow: hidden;
+        }
+
+        .map-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .map-title span {
+            font-family: "DM Mono", monospace;
+            font-size: 8px;
+            letter-spacing: .1em;
+            color: rgba(255,255,255,.3);
+        }
+
+        .network-live {
+            position: relative;
+            min-height: 350px;
+            overflow: hidden;
+            border-radius: 16px;
+            background:
+                radial-gradient(circle at 50% 40%, rgba(87,135,111,.13), transparent 35%),
+                linear-gradient(145deg, #0b1712, #07100d);
+        }
+
+        .network-live::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: .3;
+            background:
+                linear-gradient(rgba(130,180,150,.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(130,180,150,.06) 1px, transparent 1px);
+            background-size: 35px 35px;
+        }
+
+        .network-live::after {
+            content: "DIGITAL TWIN / CONNECTED INFRASTRUCTURE";
+            position: absolute;
+            left: 16px;
+            bottom: 14px;
+            font-family: "DM Mono", monospace;
+            font-size: 8px;
+            letter-spacing: .12em;
+            color: rgba(255,255,255,.24);
+        }
+
+        .network-node {
+            position: absolute;
+            z-index: 3;
+            display: grid;
+            place-items: center;
+            width: 76px;
+            height: 76px;
+            border: 1px solid rgba(135,200,164,.25);
+            border-radius: 50%;
+            background: rgba(10,25,18,.88);
+            box-shadow:
+                0 0 0 7px rgba(111,181,139,.025),
+                0 0 35px rgba(111,181,139,.08);
+            font-family: "DM Mono", monospace;
+            font-size: 8px;
+            letter-spacing: .08em;
+            color: #a3cfb4;
+        }
+
+        .network-node::after {
+            content: "";
+            position: absolute;
+            inset: -5px;
+            border: 1px solid rgba(120,190,148,.12);
+            border-radius: inherit;
+            animation: nodePulse 3s infinite;
+        }
+
+        @keyframes nodePulse {
+            0%,100% {
+                transform: scale(.95);
+                opacity: .2;
+            }
+
+            50% {
+                transform: scale(1.08);
+                opacity: .7;
+            }
+        }
+
+        .bridge {
+            top: 14%;
+            left: 12%;
+        }
+
+        .road {
+            top: 55%;
+            left: 18%;
+        }
+
+        .village {
+            top: 30%;
+            left: 48%;
+        }
+
+        .hospital {
+            top: 63%;
+            right: 12%;
+        }
+
+        .comms {
+            top: 11%;
+            right: 18%;
+        }
+
+        .network-edge {
+            position: absolute;
+            z-index: 1;
+            height: 1px;
+            transform-origin: left center;
+            background: linear-gradient(
+                90deg,
+                rgba(125,190,151,.05),
+                rgba(125,190,151,.5),
+                rgba(125,190,151,.05)
+            );
+            box-shadow: 0 0 10px rgba(125,190,151,.15);
+        }
+
+        .network-edge::after {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: 0;
+            width: 6px;
+            height: 5px;
+            border-radius: 50%;
+            background: #8bcaa7;
+            box-shadow: 0 0 12px #8bcaa7;
+            animation: signalTravel 3s linear infinite;
+        }
+
+        @keyframes signalTravel {
+            from {
+                left: 0;
+                opacity: 0;
+            }
+
+            15% {
+                opacity: 1;
+            }
+
+            85% {
+                opacity: 1;
+            }
+
+            to {
+                left: 100%;
+                opacity: 0;
+            }
+        }
+
+        .e1 {
+            width: 35%;
+            top: 28%;
+            left: 22%;
+            transform: rotate(14deg);
+        }
+
+        .e2 {
+            width: 32%;
+            top: 49%;
+            left: 25%;
+            transform: rotate(-16deg);
+        }
+
+        .e3 {
+            width: 32%;
+            top: 51%;
+            left: 55%;
+            transform: rotate(22deg);
+        }
+
+        .e4 {
+            width: 29%;
+            top: 26%;
+            left: 58%;
+            transform: rotate(27deg);
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+            .region-dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .command-intelligence {
+                grid-template-columns: 1fr;
+            }
+
+            .command-summary {
+                overflow-x: auto;
+                padding-bottom: 3px;
+            }
+
+            .command-hero {
+                padding: 24px;
+            }
+
+            .grid.g2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .command-hero h1 {
+                font-size: 42px;
+            }
+
+            .command-summary {
+                gap: 18px;
+            }
+
+            .signal-line {
+                align-items: flex-start;
+            }
+
+            .asset-strip {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                flex-direction: column;
+            }
+
+            .quick-actions .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .network-live {
+                min-height: 310px;
+            }
+
+            .network-node {
+                width: 64px;
+                height: 64px;
+                font-size: 7px;
+            }
+        }
+    </style>
+</head>
+
+<body class="app" data-page="dashboard">
+
+<header class="topbar">
+
+    <a class="brand" href="../index.html">
+        PARVAT
+        <small>HIMALAYAN INTELLIGENCE</small>
+    </a>
+
+    <nav>
+        <a class="active" href="dashboard.html">Command Center</a>
+        <a href="simulate.html">What If?</a>
+        <a href="report.html">Report</a>
+        <a href="stuck.html" class="nav-emergency">I'm Stuck</a>
+    </nav>
+
+    <div class="live">
+        <i></i>
+        <span data-health>CHECKING</span>
+    </div>
+
+</header>
+
+
+<main class="page">
+
+    <!-- =====================================================
+         COMMAND CENTER HERO
+    ====================================================== -->
+
+    <section class="command-hero">
+
+        <div class="command-hero-content">
+
+            <div class="command-kicker">
+                <span class="pulse"></span>
+                PARVAT COMMAND CENTER
+            </div>
+
+            <h1>
+                Understand the mountain.<br>
+                <span>Before it becomes a crisis.</span>
+            </h1>
+
+            <p>
+                PARVAT combines regional weather, infrastructure signals,
+                field reports and scenario simulation into one operational
+                picture for the Himalayan region.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         LIVE INTELLIGENCE STRIP
+    ====================================================== -->
+
+    <section class="command-intelligence">
+
+        <div class="command-live">
+
+            <span class="live-dot"></span>
+
+            <div>
+                <small>PARVAT COMMAND CENTER</small>
+                <strong>HIMALAYAN SITUATIONAL AWARENESS</strong>
+            </div>
+
+        </div>
+
+        <div class="command-summary">
+
+            <div>
+                <span>REGIONS MONITORED</span>
+                <strong>03</strong>
+            </div>
+
+            <div>
+                <span>WEATHER SIGNALS</span>
+                <strong>LIVE</strong>
+            </div>
+
+            <div>
+                <span>INFRASTRUCTURE</span>
+                <strong>MODELED</strong>
+            </div>
+
+            <div>
+                <span>SCENARIO ENGINE</span>
+                <strong>READY</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <div class="page-head">
+
+        <div>
+
+            <div class="eyebrow">
+                HIMALAYAN SITUATION BOARD
+            </div>
+
+            <h1>
+                Three regions.<br>
+                <i>Three live pictures.</i>
+            </h1>
+
+            <p>
+                Weather is pulled independently for Uttarakhand,
+                Himachal Pradesh and Nepal. Field signals and modeled
+                infrastructure impacts remain region-specific.
+            </p>
+
+        </div>
+
+        <span class="status">
+            DATA
+            <b id="weatherStatus">LIVE / CHECKING</b>
+        </span>
+
+    </div>
+
+
+    <!-- =====================================================
+         REGION WEATHER CARDS
+         app.js renders these into #regionCards
+    ====================================================== -->
+
+    <section
+        class="region-dashboard"
+        id="regionCards">
+    </section>
+
+
+    <!-- =====================================================
+         SELECTED REGION + DIGITAL TWIN
+    ====================================================== -->
+
+    <section
+        class="grid g2"
+        style="margin-top:14px"
+    >
+
+        <!-- REGIONAL INTELLIGENCE -->
+
+        <div class="panel pad intelligence-panel">
+
+            <div class="eyebrow">
+                REGIONAL SIGNAL
+            </div>
+
+            <h2 id="selectedRegionTitle">
+                Uttarakhand
+            </h2>
+
+            <div class="signal-line">
+
+                <div
+                    class="signal-score"
+                    id="selectedScore"
+                >
+                    —
+                </div>
+
+                <div>
+
+                    <b id="selectedBand">
+                        Loading…
+                    </b>
+
+                    <p id="selectedGuidance">
+                        Fetching regional weather and risk signals.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Dynamic risk drivers -->
+
+            <div
+                class="drivers"
+                id="drivers">
+            </div>
+
+
+            <!-- Infrastructure summary -->
+
+            <div
+                class="asset-strip"
+                id="assetStrip">
+            </div>
+
+
+            <!-- Actions -->
+
+            <div class="quick-actions">
+
+                <a
+                    class="btn primary"
+                    href="simulate.html"
+                >
+                    RUN WHAT-IF →
+                </a>
+
+                <a
+                    class="btn"
+                    href="report.html"
+                >
+                    SEND FIELD SIGNAL
+                </a>
+
+                <a
+                    class="btn"
+                    href="stuck.html"
+                >
+                    GET GUIDANCE
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             CONNECTED MOUNTAIN DIGITAL TWIN
+        ================================================== -->
+
+        <div class="panel map">
+
+            <div class="map-title">
+
+                <b>
+                    Connected Mountain Network
+                </b>
+
+                <span>
+                    PROTOTYPE DIGITAL TWIN
+                </span>
+
+            </div>
+
+
+            <div class="network-live">
+
+                <!-- Infrastructure nodes -->
+
+                <div class="network-node bridge">
+                    BRIDGE
+                </div>
+
+                <div class="network-node road">
+                    ROAD
+                </div>
+
+                <div class="network-node village">
+                    VILLAGE
+                </div>
+
+                <div class="network-node hospital">
+                    HOSPITAL
+                </div>
+
+                <div class="network-node comms">
+                    COMMS
+                </div>
+
+
+                <!-- Network connections -->
+
+                <i class="network-edge e1"></i>
+                <i class="network-edge e2"></i>
+                <i class="network-edge e3"></i>
+                <i class="network-edge e4"></i>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         OPERATIONAL FLOW
+    ====================================================== -->
+
+    <section
+        class="panel pad"
+        style="margin-top:14px"
+    >
+
+        <div class="eyebrow">
+            PARVAT RESPONSE LOOP
+        </div>
+
+        <div
+            class="grid g4"
+            style="margin-top:14px"
+        >
+
+            <div class="mini-card">
+                <small>01</small>
+                <b>OBSERVE</b>
+                <p>
+                    Monitor regional weather and field signals.
+                </p>
+            </div>
+
+            <div class="mini-card">
+                <small>02</small>
+                <b>MODEL</b>
+                <p>
+                    Understand how hazards can affect connected infrastructure.
+                </p>
+            </div>
+
+            <div class="mini-card">
+                <small>03</small>
+                <b>SIMULATE</b>
+                <p>
+                    Explore what could happen next through What-If scenarios.
+                </p>
+            </div>
+
+            <div class="mini-card">
+                <small>04</small>
+                <b>RESPOND</b>
+                <p>
+                    Send field signals or access location guidance.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    PARVAT · Live weather source is region-specific;
+    hazard impacts remain prototype model outputs.
+</footer>
+
+
+<script src="../assets/config.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>
+```
