@@ -8,7 +8,8 @@ class RiskRequest(BaseModel):
     soil_moisture: float = Field(ge=0, le=100)
     historical_events: int = Field(ge=0, le=100)
     infrastructure_density: float = Field(ge=0, le=100)
-
+    hazard: str = "landslide"
+    severity: float = Field(default=0.8, ge=0, le=1)
 class IncidentRequest(BaseModel):
     reporter: str = "anonymous"
     incident_type: str
